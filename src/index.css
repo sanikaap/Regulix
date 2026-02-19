@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 20% 97%;
+    --foreground: 20 14% 11%;
+
+    --card: 30 25% 100%;
+    --card-foreground: 20 14% 11%;
+
+    --popover: 30 25% 100%;
+    --popover-foreground: 20 14% 11%;
+
+    --primary: 12 76% 57%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 30 15% 95%;
+    --secondary-foreground: 20 14% 11%;
+
+    --muted: 30 10% 93%;
+    --muted-foreground: 20 8% 46%;
+
+    --accent: 12 76% 57%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 12% 89%;
+    --input: 30 12% 89%;
+    --ring: 12 76% 57%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --ink: 20 14% 11%;
+    --paper: 30 25% 100%;
+    --cream: 30 20% 97%;
+    --rule: 30 12% 89%;
+    --red: 0 72% 51%;
+    --amber: 32 95% 44%;
+    --green: 158 64% 40%;
+    --blue: 210 68% 45%;
+
+    --sidebar-bg: 20 14% 11%;
+    --sidebar-fg: 30 15% 92%;
+    --sidebar-muted: 25 12% 50%;
+    --sidebar-active: 12 76% 57%;
+    --sidebar-hover: 20 12% 17%;
+
+    --score-red-bg: 0 70% 97%;
+    --score-red-text: 0 72% 45%;
+    --score-amber-bg: 38 85% 96%;
+    --score-amber-text: 32 95% 36%;
+    --score-green-bg: 155 60% 96%;
+    --score-green-text: 158 64% 30%;
+
+    --font-sans: "Rubik", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    min-width: 1280px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    letter-spacing: -0.01em;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer utilities {
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
