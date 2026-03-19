@@ -33,7 +33,7 @@ const RegulationCard = ({ regulation }: RegulationCardProps) => {
           to={`/regulations/${regulation.id}`}
           className="text-sm font-medium text-primary hover:underline"
         >
-          View Details →
+          View Details
         </Link>
       </div>
     </div>

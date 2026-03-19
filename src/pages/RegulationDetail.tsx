@@ -13,7 +13,7 @@ import {
   type Regulation,
 } from "../api/regulations";
 import { formatDate } from "../utils/dates";
-import { getScoreLabel } from "../utils/scores";
+import { getScoreLabel } from "../utils/score";
 import { CheckCircle } from "lucide-react";
 
 const RegulationDetail = () => {
