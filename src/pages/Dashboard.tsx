@@ -5,21 +5,25 @@ import RButton from "../components/ui/RButton";
 import ScorePill from "../components/ui/ScorePill";
 import RBadge from "../components/ui/RBadge";
 import DeadlineCountdown from "../components/regulations/DeadlineCountdown";
+import NewScanModal from "../components/regulations/NewScanModal";
 import { useAuthStore } from "../store/authStore";
 import { fetchRegulations, type Regulation } from "../api/regulations";
 import { fetchActions, type ActionItem } from "../api/actions";
-import { formatDate, daysUntil } from "../utils/dates";
+import { formatDate } from "../utils/dates";
 import { Link } from "react-router-dom";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { ArrowUpRight, TrendingUp } from "lucide-react";
+import { ArrowUpRight, TrendingUp, Plus } from "lucide-react";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const [regulations, setRegulations] = useState<Regulation[]>([]);
   const [actions, setActions] = useState<ActionItem[]>([]);
+  const [scanOpen, setScanOpen] = useState(false);
+
+  const loadRegulations = () => fetchRegulations().then(setRegulations);
 
   useEffect(() => {
-    fetchRegulations().then(setRegulations);
+    loadRegulations();
     fetchActions().then(setActions);
   }, []);
 
@@ -79,15 +83,15 @@ const Dashboard = () => {
           title="Dashboard"
           subtitle={`Plan, prioritize, and accomplish your compliance tasks with ease.`}
           action={
-            <div className="group relative">
-              <RButton disabled size="sm">
-                + New Scan
-              </RButton>
-              <div className="absolute right-0 top-full mt-1 hidden whitespace-nowrap rounded-lg bg-foreground px-3 py-1.5 text-xs text-background shadow-lg group-hover:block">
-                Coming soon — auto-scan triggers
-              </div>
-            </div>
+            <RButton size="sm" onClick={() => setScanOpen(true)}>
+              <Plus size={14} className="mr-1" /> New Scan
+            </RButton>
           }
+        />
+        <NewScanModal
+          open={scanOpen}
+          onClose={() => setScanOpen(false)}
+          onComplete={() => loadRegulations()}
         />
 
         <main className="p-8">
