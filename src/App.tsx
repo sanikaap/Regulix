@@ -1,17 +1,19 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AuthGuard from "./components/AuthGuard";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Onboarding from "./pages/Onboarding";
-import Dashboard from "./pages/Dashboard";
-import Regulations from "./pages/Regulations";
-import RegulationDetail from "./pages/RegulationDetail";
-import Actions from "./pages/Actions";
-import Digests from "./pages/Digests";
-import Settings from "./pages/Settings";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import AuthGuard from './components/AuthGuard';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Onboarding from './pages/Onboarding';
+import Dashboard from './pages/Dashboard';
+import Regulations from './pages/Regulations';
+import RegulationDetail from './pages/RegulationDetail';
+import Actions from './pages/Actions';
+import Digests from './pages/Digests';
+import Settings from './pages/Settings';
 
 const App = () => (
   <BrowserRouter>
+    <Toaster position="top-right" richColors closeButton />
     <Routes>
       {/* Public */}
       <Route path="/login" element={<Login />} />
