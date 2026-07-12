@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import Sidebar from "../components/layout/Sidebar";
 import TopBar from "../components/layout/TopBar";
 import RButton from "../components/ui/RButton";
 import { useProfileStore } from "../store/profileStore";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 import {
   INDUSTRIES,
   JURISDICTIONS,
@@ -13,11 +16,16 @@ import {
 
 const Settings = () => {
   const { company, updateProfile } = useProfileStore();
+  const logout = useAuthStore((s) => s.logout);
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState({
     weeklyDigest: true,
     urgentAlerts: true,
     browserNotifications: false,
   });
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const toggleArrayItem = (
     field: "jurisdictions" | "productTypes" | "techStack",
@@ -28,6 +36,53 @@ const Settings = () => {
       ? current.filter((i) => i !== item)
       : [...current, item];
     updateProfile({ [field]: updated });
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    await new Promise((r) => setTimeout(r, 500));
+    setSaving(false);
+    toast.success("Profile changes saved");
+  };
+
+  const handleNotificationToggle = async (
+    key: "weeklyDigest" | "urgentAlerts" | "browserNotifications",
+  ) => {
+    if (
+      key === "browserNotifications" &&
+      !notifications.browserNotifications &&
+      "Notification" in window
+    ) {
+      try {
+        const perm = await Notification.requestPermission();
+        if (perm !== "granted") {
+          toast.error("Browser notifications blocked");
+          return;
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    setNotifications((n) => ({ ...n, [key]: !n[key] }));
+    toast.success(`${notifications[key] ? "Disabled" : "Enabled"} preference`);
+  };
+
+  const handleUpdatePassword = async () => {
+    if (password.length < 8)
+      return toast.error("Password must be at least 8 characters");
+    if (password !== confirmPassword)
+      return toast.error("Passwords do not match");
+    await new Promise((r) => setTimeout(r, 400));
+    setPassword("");
+    setConfirmPassword("");
+    toast.success("Password updated");
+  };
+
+  const handleDelete = () => {
+    if (!confirm("Delete account? This cannot be undone.")) return;
+    logout();
+    toast.success("Account deleted");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -158,7 +213,13 @@ const Settings = () => {
                     ))}
                   </select>
                 </div>
-                <RButton className="mt-2">Save Changes</RButton>
+                <RButton
+                  className="mt-2"
+                  onClick={handleSave}
+                  disabled={saving}
+                >
+                  {saving ? "Saving…" : "Save Changes"}
+                </RButton>
               </div>
             </div>
 
@@ -190,9 +251,7 @@ const Settings = () => {
                     >
                       <span className="text-sm text-foreground">{label}</span>
                       <button
-                        onClick={() =>
-                          setNotifications((n) => ({ ...n, [key]: !n[key] }))
-                        }
+                        onClick={() => handleNotificationToggle(key)}
                         className={`relative h-6 w-11 rounded-full transition-colors ${notifications[key] ? "bg-green" : "bg-muted"}`}
                       >
                         <span
@@ -217,6 +276,8 @@ const Settings = () => {
                     <input
                       type="password"
                       placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className="w-full rounded-lg border border-rule bg-card px-3 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
@@ -227,10 +288,16 @@ const Settings = () => {
                     <input
                       type="password"
                       placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       className="w-full rounded-lg border border-rule bg-card px-3 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
-                  <RButton variant="secondary" size="sm">
+                  <RButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleUpdatePassword}
+                  >
                     Update Password
                   </RButton>
                 </div>
@@ -244,7 +311,7 @@ const Settings = () => {
                 <p className="mb-4 text-sm text-muted-foreground">
                   Once you delete your account, there is no going back.
                 </p>
-                <RButton variant="danger" size="sm">
+                <RButton variant="danger" size="sm" onClick={handleDelete}>
                   Delete Account
                 </RButton>
               </div>

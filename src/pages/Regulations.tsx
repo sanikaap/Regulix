@@ -2,10 +2,13 @@ import { useEffect, useState, useMemo } from "react";
 import Sidebar from "../components/layout/Sidebar";
 import TopBar from "../components/layout/TopBar";
 import RegulationCard from "../components/regulations/RegulationCard";
+import RButton from "../components/ui/RButton";
+import NewScanModal from "../components/regulations/NewScanModal";
 import { fetchRegulations, type Regulation } from "../api/regulations";
+import { Plus } from "lucide-react";
 
 const FILTERS = ["All", "Final Rule", "Proposed", "Guidance"] as const;
-const JURISDICTIONS = ["All", "US", "UK", "EU", "AU"] as const;
+const JURISDICTIONS = ["All", "US", "UK", "EU", "AU", "SG"] as const;
 const SORTS = ["Newest", "Deadline", "Relevance High→Low"] as const;
 
 const Regulations = () => {
@@ -14,9 +17,12 @@ const Regulations = () => {
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [jurisdictionFilter, setJurisdictionFilter] = useState<string>("All");
   const [sort, setSort] = useState<string>("Newest");
+  const [scanOpen, setScanOpen] = useState(false);
+
+  const load = () => fetchRegulations().then(setRegulations);
 
   useEffect(() => {
-    fetchRegulations().then(setRegulations);
+    load();
   }, []);
 
   const filtered = useMemo(() => {
@@ -56,6 +62,16 @@ const Regulations = () => {
         <TopBar
           title="Regulations"
           subtitle={`${filtered.length} regulations tracked`}
+          action={
+            <RButton size="sm" onClick={() => setScanOpen(true)}>
+              <Plus size={14} className="mr-1" /> New Scan
+            </RButton>
+          }
+        />
+        <NewScanModal
+          open={scanOpen}
+          onClose={() => setScanOpen(false)}
+          onComplete={load}
         />
 
         <main className="p-8">
