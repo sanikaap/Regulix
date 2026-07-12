@@ -140,7 +140,7 @@ const mockRegulations: Regulation[] = [
 
 export const fetchRegulations = async (): Promise<Regulation[]> => {
   await new Promise((r) => setTimeout(r, 300));
-  return mockRegulations;
+  return [...mockRegulations];
 };
 
 export const fetchRegulationById = async (
@@ -148,4 +148,9 @@ export const fetchRegulationById = async (
 ): Promise<Regulation | undefined> => {
   await new Promise((r) => setTimeout(r, 200));
   return mockRegulations.find((r) => r.id === id);
+};
+
+export const addRegulation = (reg: Regulation): Regulation => {
+  mockRegulations.unshift(reg);
+  return reg;
 };
